@@ -5,8 +5,9 @@
 
     python binning.py rates.txt        # two columns, n and R
 
-The simulation is run at definite motional occupation, but a coherent state of
-mean nbar has Poissonian occupation, so the observable rate is
+The simulation is run at definite motional occupation, but a phase-averaged
+coherent (PAC) state of mean nbar has Poissonian occupation, so the observable
+rate is
 
     <R>(nbar) = sum_k P(k; nbar) R(k),    P(k; nbar) = nbar^k e^-nbar / k!
 
