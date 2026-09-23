@@ -11,6 +11,8 @@ cooling of a single ion on one motional mode. Files contain the codes used for t
 | `mcwf.py` | split-operator MCWF propagation of the multilevel atom |
 | `eit.py` | the EIT model and one point of the rate curve |
 | `binning.py` | Fock-basis rates recombined into a Poissonian mean |
+| `plots.ipynb` | the figures, built up curve by curve, including the binning |
+| `data/` | the rate curves the notebook plots, as `.npy` |
 
 ## Use
 
@@ -19,4 +21,6 @@ python -u eit.py --n 100 --t-us 25 --M 2000
 python -u eit.py --n 100 --t-us 25 --M 2000 --se-recoil --se-cos2 4/15
 ```
 
-Requires `numpy`, `scipy` and `joblib`.
+The notebook reads `data/` and needs nothing else run first.
+
+Requires `numpy`, `scipy` and `joblib`, and `matplotlib` for the notebook.
