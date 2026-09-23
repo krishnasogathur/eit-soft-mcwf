@@ -23,12 +23,10 @@ from scipy.optimize import brentq
 
 def init_arrays(N, pmax): #no numpy here
     p = np.linspace(-pmax,pmax,N)
-    # p = np.arange(-pmax, pmax, dp)
     x = np.fft.fftfreq(N, d=p[1]-p[0]) * 2 * np.pi 
     x = np.fft.fftshift(x) 
     dx = (x[1]-x[0])
 
-    # p = np.fft.fftshift(np.fft.fftfreq(N, d=dx) * 2 * np.pi) 
 
     dp = p[1]-p[0]
 
@@ -85,7 +83,6 @@ def perform_ifft(psi_p_in, batched=False):
             np.fft.ifft(np.fft.ifftshift(psi_p_in, axes=1), axis=1),
             axes=1
         ) * np.sqrt(N)
-        # return psi_x_out.reshape(2 * N, -1)
         return psi_x_out
     else:
         psi_x_out = np.fft.fftshift(
@@ -97,7 +94,7 @@ def perform_ifft(psi_p_in, batched=False):
 
 def compute_expectations(psi, ops, mom_space):
     psi = psi / np.linalg.norm(psi)
-    n_lev = psi.shape[0]                     # ← add
+    n_lev = psi.shape[0]
 
     if not np.all(mom_space):
         psi_pos = perform_ifft(psi)
@@ -110,7 +107,7 @@ def compute_expectations(psi, ops, mom_space):
             op_psi = wf * op
             vals[i] = np.vdot(wf, op_psi).real
 
-        elif op.ndim == 2 and op.shape == (n_lev, n_lev):   # ← was (2,2)
+        elif op.ndim == 2 and op.shape == (n_lev, n_lev):
             op_psi = op @ psi
             vals[i] = np.vdot(psi, op_psi).real
 
@@ -319,7 +316,6 @@ def find_jump_time(psi_prev, eps, r,  U_x_nh_eps, H_x_nh_eigs, H_x_nh_V, H_x_nh_
     """
     Finds the sub-time t* ∈ [0, eps] where the evolved psi_prev's norm matches r.
     """
-    # print("prev norm inside find jump time func:", np.linalg.norm(psi_prev) **2)
 
     val0 = sub_step_evol(0, psi_prev, r, U_x_nh_eps,  H_x_nh_eigs, H_x_nh_V, H_x_nh_Vinv, H_p_nh_eigs, hbar , True ) 
     val1 = sub_step_evol(eps, psi_prev, r, U_x_nh_eps,  H_x_nh_eigs, H_x_nh_V, H_x_nh_Vinv, H_p_nh_eigs, hbar , True )
@@ -366,7 +362,6 @@ def perform_jump(psi, c_ops):
 
 def detect_jump_and_update(psi_curr, eps, r, U_x_nh_eps, H_x_nh_eigs, H_x_nh_V, H_x_nh_Vinv, H_p_nh_eigs, c_ops, hbar=1):
     t_star = find_jump_time(psi_curr, eps, r,  U_x_nh_eps, H_x_nh_eigs, H_x_nh_V, H_x_nh_Vinv, H_p_nh_eigs, hbar)
-    # print(f"Jump at time step {i}, t* = {t_star:.4e}")
     psi_updated = sub_step_evol(t_star, psi_curr ,r, U_x_nh_eps, H_x_nh_eigs, H_x_nh_V, H_x_nh_Vinv, H_p_nh_eigs, hbar) #this is the time at which it gets projected, hence we evolve until norm reaches that point
     psi_after_jump = perform_jump(psi_updated, c_ops)
 
@@ -381,67 +376,14 @@ def finish_eps_evol(del_t, psi_after_jump, r, U_x_nh_eps, H_x_nh_eigs, H_x_nh_V,
 def build_fock_state(psi_nls, n_fock, nu_trap, xi, dx, m=1, hbar=1): # by default init in momentum space
     n_psi = psi_nls.shape[0]
 
-    # def fock_n(n, x, nu_trap, m=1, hbar=1):
-        
-    #     """Returns the n-th Fock state position space wavefunction for QHO."""
-    #     # coeff = ((m * nu_trap / (np.pi * hbar)) ** (1 / 4)) / np.sqrt(factorial(n)) / (2 ** (n / 2))
-
-    #     log_coeff = (
-    #         0.25 * np.log(m * nu_trap / (np.pi * hbar))
-    #         - 0.5 * (n * np.log(2) + gammaln(n + 1))
-    #     )
-
-    #     coeff = np.exp(log_coeff)
-
-    #     # poly = hermite(n)
-    #     # gaussian = np.exp(-x ** 2 / 2)
-    #     # return coeff * poly(x) * gaussian
-    
-
-    #     # poly = hermite(n)
-    #     gaussian = np.exp(-x ** 2 / 2)
-
-    #     gaussian = np.exp(-x**2/2)
-    #     H = eval_hermite(n, x)
-    #     psi = coeff * H * gaussian
-
-    #     print("coeff =", coeff)
-    #     print("H finite:", np.isfinite(H).all())
-    #     print("psi finite:", np.isfinite(psi).all())
-    #     print("max |H| =", np.nanmax(np.abs(H)))
-    #     print("max |psi| =", np.nanmax(np.abs(psi)))
-    #     print("norm =", np.linalg.norm(psi))
-
-    #     return psi
-
-    #     return coeff * eval_hermite(n, x) * gaussian
-    # def fock_n(n, xi, nu_trap=1.0, m=1, hbar=1):
-    #     """n-th normalised HO wavefunction. xi = x/x0. Stable to n ~ 2000+."""
-    #     coeff = (m * nu_trap / (np.pi * hbar))**0.25
-    #     if n == 0:
-    #         return coeff * np.exp(-xi**2 / 2)
-    #     if n == 1:
-    #         return coeff * np.sqrt(2.0) * xi * np.exp(-xi**2 / 2)
-
-    #     logoff = np.zeros_like(xi)      # per-point log offset
-    #     psi0 = np.ones_like(xi)
-    #     psi1 = np.sqrt(2.0) * xi
-
-    #     for k in range(1, n):
-    #         psi2 = np.sqrt(2.0/(k+1)) * xi * psi1 - np.sqrt(k/(k+1)) * psi0
-    #         psi0, psi1 = psi1, psi2
-    #         a = np.abs(psi1)
-    #         big = a > 1e100
-    #         if np.any(big):
-    #             f = np.where(big, a, 1.0)
-    #             psi0 = psi0 / f
-    #             psi1 = psi1 / f
-    #             logoff = logoff + np.where(big, np.log(f), 0.0)
-
-    #     lg = np.log(np.abs(psi1) + 1e-300) + logoff - xi**2/2 + np.log(coeff)
-    #     return np.sign(psi1) * np.exp(lg)
 
     def fock_n(n, x, nu_trap, m=1, hbar=1):
+            """n-th normalised HO wavefunction of argument x = x/x0.
+
+            Upward recurrence with a per-point log offset, so that the
+            Hermite overflow at large n is carried in the exponent rather
+            than in the value.  Stable past n ~ 2000.
+            """
             coeff = (m * nu_trap / (np.pi * hbar))**0.25
             if n == 0: return coeff * np.exp(-x**2 / 2)
             if n == 1: return coeff * np.sqrt(2.0) * x * np.exp(-x**2 / 2)
@@ -461,8 +403,6 @@ def build_fock_state(psi_nls, n_fock, nu_trap, xi, dx, m=1, hbar=1): # by defaul
     psi_x_init = psi_x_init * np.sqrt(dx) #this is the psi which satisfies sum(abs(psi)^2) = 1, and useful to preserve normalization in our wavefunction
 
     psi_nls = psi_nls.ravel()
-    # print(np.linalg.norm(psi_nls)  , "norm of psi_nls before normalization")
-    # exit(0)
     psi_nls = psi_nls / np.linalg.norm(psi_nls)  # normalized; so that sum(psi(x)^2 dx) = 1 (integral as a discrete sum)
     psi_init_x = np.kron(psi_x_init, psi_nls)  # |g⟩ ⊗ |ψ(x)⟩ #positional state tensored with atomic state for complete state description 
 
@@ -520,7 +460,6 @@ def init_nh_hamiltonians(H_x, H_p, correction_blocks):
     Construct non-Hermitian Hamiltonians by adding -i/2 * L†L terms to H_x/.
     """
     # Build non-Hermitian contribution from collapse ops
-    # correction = sum(L.conj().T @ L for L in c_ops)
     H_x_nh = H_x - (1j / 2) * correction_blocks
     
     return H_x_nh, H_p
@@ -553,8 +492,6 @@ def simulate_trajectory_block(
 
     jump_times = []
 
-
-    # es_projs = np.zeros((N, n_store_steps))
 
     if return_psis:
         psi_return = np.zeros(psip.shape + (n_store_steps_psi,), dtype=complex)
@@ -594,7 +531,6 @@ def simulate_trajectory_block(
 
         # Downsampled storage
         if (step % downsample_factor == 0):
-            # es_projs[:, store_idx] = (proj_e * np.abs(psip) ** 2)[:N]
             # Compute all expectations (every step)
             norms_arr[store_idx] = np.linalg.norm(psip) ** 2
             avg_vals[:, store_idx] = compute_expectations(psip, e_ops, mom_array)
@@ -645,7 +581,6 @@ def simulate_trajectory_block(
 
         while norm_sq_next < r:
 
-            # print("SE detected: ", "normsq = ", norm_sq_next, "r = ", r)
 
             psi_after_jump, tstar = detect_jump_and_update(
                 psip, eps - t_curr, r,
@@ -657,7 +592,6 @@ def simulate_trajectory_block(
             r = np.random.rand()  # reset jump threshold
             t_curr += tstar # update present sub-step time
 
-            # print("Jump detected at time = ", {step * eps + t_curr})
 
             jump_times.append(step * eps + t_curr)
 
