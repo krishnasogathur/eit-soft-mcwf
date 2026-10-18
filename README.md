@@ -5,6 +5,20 @@ cooling of a single ion on one motional mode. Files contain the codes used for t
 
 ## Definitions
 
+### Method (SOFT-MCWF)
+
+    H_eff = H - (i/2) sum_k L_k^dag L_k
+
+    psi(t+eps) = U_p(eps/2) U_x(eps) U_p(eps/2) psi(t),    U = exp(-i H_eff dt/hbar)
+
+    ||psi(t)||^2 < r  ->  jump, draw k with prob ||L_k psi||^2 / sum_j ||L_j psi||^2
+
+U_p is diagonal; U_x is the dense internal-level block, exponentiated by
+eigendecomposition. The jump time within a step is located by root-finding on
+||psi(t)||^2 = r, not by checking at the end of the step.
+
+### EIT model
+
     eta    = k_z x0,          x0 = sqrt(hbar/m omega_z)
     eta_ph = eta/sin(theta)
 
