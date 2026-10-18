@@ -7,29 +7,29 @@ cooling of a single ion on one motional mode. Files contain the codes used for t
 
 ### Method (SOFT-MCWF)
 
-    H_eff = H - (i/2) sum_k L_k^dag L_k
+$$H_{\text{eff}} = H - \frac{i}{2}\sum_k L_k^\dagger L_k$$
 
-    psi(t+eps) = U_p(eps/2) U_x(eps) U_p(eps/2) psi(t),    U = exp(-i H_eff dt/hbar)
+$$\psi(t+\varepsilon) = U_p(\varepsilon/2)\,U_x(\varepsilon)\,U_p(\varepsilon/2)\,\psi(t), \qquad U = e^{-iH_{\text{eff}}\,dt/\hbar}$$
 
-    ||psi(t)||^2 < r  ->  jump, draw k with prob ||L_k psi||^2 / sum_j ||L_j psi||^2
+$$\|\psi(t)\|^2 < r \;\;\Rightarrow\;\; \text{jump, draw } k \text{ with prob. } \frac{\|L_k\psi\|^2}{\sum_j\|L_j\psi\|^2}$$
 
-U_p is diagonal; U_x is the dense internal-level block, exponentiated by
+`U_p` is diagonal; `U_x` is the dense internal-level block, exponentiated by
 eigendecomposition. The jump time within a step is located by root-finding on
-||psi(t)||^2 = r, not by checking at the end of the step.
+$\|\psi(t)\|^2 = r$, not by checking at the end of the step.
 
 ### EIT model
 
-    eta    = k_z x0,          x0 = sqrt(hbar/m omega_z)
-    eta_ph = eta/sin(theta)
+$$\eta = k_z x_0, \qquad x_0 = \sqrt{\hbar/m\omega_z}, \qquad \eta_{\text{ph}} = \eta/\sin\theta$$
 
-    <dn> per emission = eta_se^2 / 2,      eta_se = eta_ph sqrt(x)
+$$\langle dn\rangle_{\text{per emission}} = \frac{\eta_{se}^2}{2}, \qquad \eta_{se} = \eta_{\text{ph}}\sqrt{x}$$
 
-    <cos^2 theta> = (1/3)(2/5) + (2/3)(1/5) = 4/15     (x = --se-cos2)
+$$\langle\cos^2\theta\rangle = \tfrac{1}{3}\cdot\tfrac{2}{5} + \tfrac{2}{3}\cdot\tfrac{1}{5} = \frac{4}{15} \qquad (x = \texttt{--se-cos2})$$
 
-    N >= (2/pi) safety^2 (2 n_hi + 1)                  grid / turning point
-    N >= 2 safety sqrt(2 n_hi + 1) kdp_floor / eta      grid / k_beam-dp floor
+$$N \ge \frac{2}{\pi}\,\text{safety}^2\,(2n_{hi}+1) \qquad \text{grid / turning point}$$
 
-    <R>(nbar) = sum_k P(k; nbar) R(k),     P(k; nbar) = nbar^k e^-nbar / k!
+$$N \ge 2\,\text{safety}\sqrt{2n_{hi}+1}\;\frac{\text{kdp\_floor}}{\eta} \qquad \text{grid / } k_{\text{beam}}/dp \text{ floor}$$
+
+$$\langle R\rangle(\bar n) = \sum_k P(k;\bar n)\,R(k), \qquad P(k;\bar n) = \frac{\bar n^k e^{-\bar n}}{k!}$$
 
 ## Files
 
