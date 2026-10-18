@@ -1,11 +1,5 @@
-"""Physical parameters, the natural-unit conversion, and grid sizing.
-
-Everything the simulation needs to be reproduced is here.  The atom is Be+
-driven in a three-level Lambda EIT configuration on a single axial mode.
-
-Units: hbar = m = 1, time in Gamma_1^-1, energy in hbar Gamma_1.  US_PER_NAT
-converts a natural time to microseconds.
-"""
+"""Physical parameters (Be+) and natural units: hbar = m = 1, time in
+Gamma_1^-1, energy in hbar Gamma_1."""
 import numpy as np
 
 # ---------------------------------------------------------------------
@@ -70,30 +64,8 @@ N_MAX     = 2**18
 
 
 def size_grid(n_hi, safety=SAFETY, kdp_floor=KDP_FLOOR, N_min=N_MIN, N_max=N_MAX):
-    """Smallest power-of-two grid holding Fock states up to n_hi.
-
-    With p = linspace(-pmax, pmax, N) and x = 2 pi fftfreq(N, dp),
-
-        L_half = pi/dp,     dx = 2 pi/(N dp)
-
-    Containing the classical turning point in both x and p, with margin
-    `safety`, forces
-
-        N >= (2/pi) safety^2 (2 n_hi + 1).
-
-    A Fock state is band-limited by its turning momentum, so `safety` only a
-    little above 1 already gives machine-precision representation: measured
-    weight in the outer tenth of the box is ~1e-26 at safety = 1.25 and
-    9e-2 at safety = 1.10.
-
-    `kdp_floor` separately keeps k_beam/dp above a floor, adding
-
-        N >= 2 safety sqrt(2 n_hi + 1) kdp_floor / eta.
-
-    This is not tied to spontaneous emission: the lasers transfer +-k per
-    photon and +-2k per Raman cycle either way, and dp grows at small n
-    (pmax ~ sqrt(n) while N ~ n), so without the floor k_beam/dp falls below 1
-    at the bottom of the range.  Pass 0 to disable.
+    """Smallest power-of-two grid holding Fock states up to n_hi.  See the
+    README for the sizing conditions.  Pass kdp_floor=0 to disable the floor.
     """
     turn  = np.sqrt(2*n_hi + 1)
     N_box = (2/np.pi)*safety**2*(2*n_hi + 1)

@@ -6,28 +6,8 @@ trajectory), propagates an MCWF ensemble, and fits dnbar/dt.
     python -u eit.py --n 100 --t-us 25 --M 2000
     python -u eit.py --n 100 --t-us 25 --M 2000 --se-recoil --se-cos2 4/15
 
-Spontaneous emission is modelled in 1D as a kick of +-k_se along the trap
-axis at equal weight.  Since a jump exp(i q x) shifts p by hbar q exactly, at
-all orders in the Lamb-Dicke parameter,
-
-    <dn> per emission = (q x0)^2 / 2 = eta_se^2 / 2
-
-for any state.  That matters here because eta_se sqrt(2n+1) reaches ~23 at
-n = 950, far outside the Lamb-Dicke regime.
-
---se-cos2 sets the axial momentum fraction, eta_se = eta_photon sqrt(x).  It
-reinterprets the same two-point form as a second-moment match to a 3D
-emission pattern: 1/3 isotropic, 2/5 dipole perpendicular to the axis, 1/5
-dipole along it.  The physical value for this level scheme is the
-branching-weighted average
-
-    <cos^2 theta> = (1/3)(2/5) + (2/3)(1/5) = 4/15,
-
-one third of the decay going to the perpendicular-dipole channel.  With
+See the README for the recoil model and the --se-cos2 convention.  With
 --se-recoil omitted, decay is kept but the emission kick is dropped.
-
-The output npz holds per-trajectory n(t), not just the ensemble mean, so the
-fit can be redone over sub-windows and the error re-derived without recompute.
 """
 import argparse, os, shutil, tempfile, time
 from contextlib import redirect_stdout
@@ -48,12 +28,10 @@ from mcwf import (basis, build_KE_hamiltonian, build_fock_state,
 
 
 def se_wavenumber(axial_frac):
-    """Emission wavenumber for the 1D two-direction kick model."""
     return eta_ph*np.sqrt(axial_frac)/x0
 
 
 def build_ops(N, pmax, eps, se_recoil, se_cos2=1.0):
-    """Propagator, jump operators and observables on an N-point grid."""
     x, p, dx, dp = init_arrays(N, pmax)
     I_space, I_NLS = np.ones(N), np.eye(n_levels)
 
@@ -108,7 +86,6 @@ def edge_weight(psi_p, x, p, pmax, frac=0.9):
 
 
 def run_point(n_target, t_us, M, args):
-    """Propagate M trajectories at initial occupation n_target and fit the rate."""
     if args.mode == "thermal":
         n_hi, trunc = thermal_cap(n_target, args.tail_tol)
     else:
