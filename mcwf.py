@@ -1,22 +1,6 @@
-"""Split-operator MCWF propagation of a multilevel atom on a momentum grid.
-
-The state is (n_levels, N) complex, stored in momentum space.  One step of
-length `eps` is the Strang splitting
-
-    exp(-i H_p eps/2) exp(-i H_x eps) exp(-i H_p eps/2)
-
-where H_x carries the trap potential, the internal Hamiltonian and the laser
-coupling as a dense (N, n_levels, n_levels) block, and H_p is diagonal.  The
-internal block is exponentiated by eigendecomposition at every grid point
-rather than by a series or a general matrix exponential: a detuning never
-commutes with its own coupling, so the internal block must not be split.
-
-Dissipation follows the standard wavefunction Monte Carlo: propagation under
-the non-Hermitian H - (i/2) sum c^dag c until the norm drops below a uniform
-random r, the crossing time located by Brent root-finding inside the step, a
-jump applied by drawing among the c_ops with weight ||c psi||^2, and the
-remainder of the step completed with a fresh r.
-"""
+'''
+Helper functions for the block-diag implementation
+'''
 import numpy as np
 from scipy.optimize import brentq
 
