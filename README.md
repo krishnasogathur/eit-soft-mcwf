@@ -15,8 +15,7 @@ $$\|\psi(t)\|^2 < r \;\;\Rightarrow\;\; \text{jump, draw } k \text{ with prob. }
 
 `U_p` is diagonal; `U_x` is block-diagonal over the grid, one `n_levels x
 n_levels` block per point, each exponentiated by block eigendecomposition. The
-jump time within a step is located by root-finding on $\|\psi(t)\|^2 = r$, not
-by checking at the end of the step.
+jump time within a step is located by root-finding on $\|\psi(t)\|^2 = r$.
 
 ### EIT model
 
