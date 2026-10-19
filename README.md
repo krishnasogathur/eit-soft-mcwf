@@ -13,9 +13,10 @@ $$\psi(t+\varepsilon) = U_p(\varepsilon/2)\,U_x(\varepsilon)\,U_p(\varepsilon/2)
 
 $$\|\psi(t)\|^2 < r \;\;\Rightarrow\;\; \text{jump, draw } k \text{ with prob. } \frac{\|L_k\psi\|^2}{\sum_j\|L_j\psi\|^2}$$
 
-`U_p` is diagonal; `U_x` is the dense internal-level block, exponentiated by
-eigendecomposition. The jump time within a step is located by root-finding on
-$\|\psi(t)\|^2 = r$, not by checking at the end of the step.
+`U_p` is diagonal; `U_x` is block-diagonal over the grid, one `n_levels x
+n_levels` block per point, each exponentiated by block eigendecomposition. The
+jump time within a step is located by root-finding on $\|\psi(t)\|^2 = r$, not
+by checking at the end of the step.
 
 ### EIT model
 
