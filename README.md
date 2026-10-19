@@ -25,9 +25,10 @@ $$\langle dn\rangle_{\text{per emission}} = \frac{\eta_{se}^2}{2}, \qquad \eta_{
 
 $$\langle\cos^2\theta\rangle = \tfrac{1}{3}\cdot\tfrac{2}{5} + \tfrac{2}{3}\cdot\tfrac{1}{5} = \frac{4}{15} \qquad (x = \texttt{--se-cos2})$$
 
-$$N \ge \frac{2}{\pi}\,\text{safety}^2\,(2n_{hi}+1) \qquad \text{grid / turning point}$$
+$$N \ge \frac{2}{\pi}\,s^2\,(2n_{hi}+1), \qquad N \ge 2s\sqrt{2n_{hi}+1}\;\frac{\kappa}{\eta}$$
 
-$$N \ge 2\,\text{safety}\sqrt{2n_{hi}+1}\;\frac{\text{kdp\_floor}}{\eta} \qquad \text{grid / } k_{\text{beam}}/dp \text{ floor}$$
+where `s` is `safety`, `n_hi` the highest Fock state, and `kappa` is `kdp_floor`
+(the floor on $k_{\text{beam}}/dp$).
 
 $$\langle R\rangle(\bar n) = \sum_k P(k;\bar n)\,R(k), \qquad P(k;\bar n) = \frac{\bar n^k e^{-\bar n}}{k!}$$
 
